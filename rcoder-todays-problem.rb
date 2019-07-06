@@ -44,7 +44,7 @@ def run(args)
     pp todays_problem
     
     response = conn.post do |req|
-        req.url  "https://hooks.slack.com/services/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"
+        req.url  ENV["RCODER_SLACK_WEBHOOK"]
         req.body = {
             text: "<https://atcoder.jp/contests/#{todays_problem[:contest_id]}/tasks/#{todays_problem[:id]}|#{todays_problem[:title]}>",
             blocks: [
