@@ -2,7 +2,7 @@ require 'faraday'
 require 'faraday_middleware'
 require 'json'
 
-def run
+def run(args)
     conn = Faraday.new do |faraday|
         faraday.request :json
         faraday.response :json, :parser_options => { :symbolize_names => true }, :content_type => /\bjson$/
