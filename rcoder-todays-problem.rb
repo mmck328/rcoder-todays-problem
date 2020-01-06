@@ -13,7 +13,7 @@ def run(args)
     raise "Failed to aquire problem list" if !response.success?
     problems = response.body
         .select{|problem| 
-            ["abc", "agc"].include?(problem[:contest_id][0..2]) && problem[:point] && problem[:point] <= 300
+            ["abc", "agc"].include?(problem[:contest_id][0..2]) && problem[:point] && problem[:point] <= 400
         }
         .each{|problem| problem[:ac_count] = 0}
     
@@ -23,11 +23,14 @@ def run(args)
     users_acs = users.map { |user|
         user_id = user[:user_id]
         response = conn.get("https://kenkoooo.com/atcoder/atcoder-api/results?user=#{user_id}")
-        raise "Failed to aquire submissions of user: #{user_id}" if !response.success?
-        response.body
-            .select{|sub| sub[:result] == "AC"}
-            .uniq{|sub| [sub[:problem_id], sub[:user_id]]}
-    }.flatten!
+        if response.success?
+            response.body
+                .select{|sub| sub[:result] == "AC"}
+                .uniq{|sub| [sub[:problem_id], sub[:user_id]]}
+        else
+            nil
+        end
+    }.compact.flatten
     
     users_acs.each do |ac|
         problem_idx = problems.find_index{|problem| problem[:id] == ac[:problem_id]}
